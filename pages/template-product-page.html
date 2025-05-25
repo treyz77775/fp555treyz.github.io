@@ -1,0 +1,269 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv = "X-UA-Compatible" content="ie=edge">
+    <title>Страница шаблон</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../styles/style-product-page.css">
+    <link rel="stylesheet" href="../styles/navbar.css">    
+    <link rel="stylesheet" href="../styles/footer.css">
+    <link rel="stylesheet" href="../styles/card-style.css"> 
+    <link rel="stylesheet" href="../styles/common-style.css">
+    <link rel="icon" href="logotype.jpg" type="image/gif" sizes="16x16" />
+  
+    <script src="https://kit.fontawesome.com/1317bdbbb8.js" crossorigin="anonymous"></script>
+    <script src = "../scripts/row_filler.js"></script>
+    <script src = "../scripts/main.js"></script>
+</head>
+
+<body onload="fillRowCard(); fillCartItems();">
+
+    <div class="nav-container">
+        <div class="wrapper">
+            <nav>
+                <input type="checkbox" id = "check">
+                <label for="check" class="checkbtn">
+                    <i class="fas fa-bars"></i>
+                </label>
+                <label class="logo">
+                 <a href="/index.html"><img src="logotype.jpg" alt="" style="height: 40px; width: auto;"></a>
+                </label>
+                <ul class="nav-items">
+                    <li>
+                        <a href="../pages/catalog.html">Каталог</a>
+                    </li>
+                    <li>
+                        <a href="../pages/about.html">О нас</a>
+                    </li>
+                    <li>
+                        <a href="../pages/frequently-asked-questions.html">FAQ</a>
+                    </li>
+                                        <li>
+                        <a href="#" id="login-toggle">Вход <i class="fas fa-caret-down"></i></a>
+                    </li>
+                                        <li>
+                        <a href="https://www.instagram.com/mimibu_astana" id="instagram">Instagram</a>
+                    </li>
+                    <li>
+                        <a href="https://api.whatsapp.com/send/?phone=77780905908&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%0A%0A%D0%9F%D0%B8%D1%88%D1%83+%D0%B8%D0%B7+%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F+2%D0%93%D0%98%D0%A1.%0A%0A&type=phone_number&app_absent=0" id="whatsapp">Whatsapp</a>
+                    </li>
+                </ul>
+                </ul>
+
+                <!-- Контейнер с формой вне ul, но внутри nav -->
+                <div id="auth-dropdown" class="auth-dropdown" style="display:none;">
+                    <span id="auth-close" style="float:right; cursor:pointer;">&times;</span>
+                    <div id="auth-forms">
+                        <div id="login-form">
+                            <h3>Вход</h3>
+                            <input type="text" id="login-username" placeholder="Имя пользователя" />
+                            <input type="password" id="login-password" placeholder="Пароль" />
+                            <button onclick="login()">Войти</button>
+                            <p>
+                                Нет аккаунта?
+                                <a href="#" onclick="showRegister(event)">Зарегистрироваться</a>
+                            </p>
+                            <p id="login-error" style="color:red;"></p>
+                        </div>
+
+                        <div id="register-form" style="display:none;">
+                            <h3>Регистрация</h3>
+                            <input type="text" id="register-username" placeholder="Имя пользователя" />
+                            <input type="password" id="register-password" placeholder="Пароль" />
+                            <button onclick="register()">Зарегистрироваться</button>
+                            <p>
+                                Уже есть аккаунт?
+                                <a href="#" onclick="showLogin(event)">Войти</a>
+                            </p>
+                            <p id="register-error" style="color:red;"></p>
+                        </div>
+                    </div>
+                </div>
+                </ul>
+                <input type="checkbox" id="cart">
+                <label for="cart" class="cartbtn">
+                    <div id="mark-cartbtn"></div>
+                    <i class="fas fa-shopping-cart"></i>
+
+                </label>
+                <div class="cart-items">
+                    <div class="cart-items-background">
+
+                    </div>
+                    <div class="cart-items-list">
+                        <div class="list-header">
+                            <h3>Ваша корзина</h3>
+                            <label for="cart" class="cartbtnclose">
+                                <i class="fas fa-times"></i>
+                            </label>
+                        </div>
+                        <div class="empty-list-state">
+                            Пока что корзина пуста
+                        </div>
+                        <div class="list">
+                        </div>
+                    </div>
+                </div>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="category-container">
+        <div class="wrapper">
+            <ul class="category-items">
+                <li>
+                    <a href="../pages/catalog.html#classic">Классика</a>
+                </li>
+                <li>
+                    <a href="../pages/catalog.html#kids">Самым маленьким</a>
+                </li>
+                <li>
+                    <a href="../pages/catalog.html#constructor">Конструктор</a>
+                </li>
+                <li>
+                    <a href="../pages/catalog.html#education">Игрушки для обучения</a>
+                </li>
+                <li>
+                    <a href="../pages/catalog.html#knitted">Вязанные игрушки</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="product-container">
+        <div class="wrapper">
+            <div class="product-card">
+                <div class="images">
+                    <div class="slider">
+                        <div class="icon" id="left-arrow" onclick="slide('left')">
+                            <i  class="fas fa-chevron-left"></i>
+                        </div>
+
+                        <div class="icon" id="right-arrow" onclick="slide('right')">
+                            <i  class="fas fa-chevron-right"></i>
+                        </div>
+                        <img src="/img/tractors.jpg" alt="" id="slider">
+                    </div>
+                    <div class="thumbnail">
+                        <div class="thumb">
+                            <img src="/img/tractors.jpg" alt="" onclick="changeSlider(this)" class="active-img">
+                        </div>
+                        <div class="thumb">
+                            <img src="/img/tractors2.jpg" alt="" onclick="changeSlider(this)">
+                        </div>
+                        <div class="thumb"><img src="/img/tractors3.jpg" alt="" onclick="changeSlider(this)"></div>
+                    </div>
+                </div>
+
+                <div class="product-info">
+                    <p class="meta-data"><i class="fas fa-barcode"></i>Артикул: SK-45067</p>
+                    <h2 id="product-name">Тракторы</h2>
+                    <h3 id="product-price">1 500 ₽</h3>
+                    <div class="button-quantity">
+                        <h4>Количество</h4>
+                        <div class="button-stepper">
+                            <button id="decrement" onclick="stepper(this)">-</button>
+                             <input type="number" min="1" max="100" step="1" value="1" id="input-stepper" readonly>                
+                            <button id="increment" onclick="stepper(this)">+</button>
+                        </div>
+
+
+                    <div class="button-add-to-shop">
+                        <button type="submit" id="addToCart" name="add" class="button-primary" onclick="addToCart(this)">
+                            <p>Добавить в корзину</p>
+                        </button>
+                    </div>
+
+                    <div class="product-description">
+                        <h4>Описание</h4>
+                        <p>$Описание</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-container">
+        <div class="wrapper">
+            <section class="card-block">
+                <h3>Популярное</h3>
+                <div class="card-table" id="popular">
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="footer-container">
+        <div class="wrapper">
+        <footer>
+            <div class="footer-table">
+                <ul class="footer-column">
+                        <div class="logo">
+                            <img src="logotype.jpg" alt="" style="height: 40px; width: auto" />
+                        </div>
+                </ul>
+                <ul class="footer-column">
+                    <li>
+                        <h3>Быстрые ссылки</h3>
+                    </li>
+                    <li>
+                        <a href="#">Каталог</a>
+                    </li>
+                    <li>
+                        <a href="#">Доставка</a>
+                    </li>
+                    <li>
+                        <a href="#">О нас</a>
+                    </li>
+                    <li>
+                        <a href="#">Контакты</a>
+                    </li>
+                </ul>
+                <ul class="footer-column">
+                    <li>
+                        <h3>Для связи</h3>
+                    </li>
+                    <li>
+                        Понедельник - Пятница
+                    </li>
+                    <li>
+                        09:00 - 15:00
+                    </li>
+                                            <li>Улица Анет баба, 13/2
+                        Нура район, Астана, Z05T6G</li>
+                    <li>
+                        <a href="#">Т: +7‒778‒090‒59‒08</a>
+                    </li>
+                </ul>
+                <ul class="footer-column">
+                    <li>
+                        <h3>Разделы</h3>
+                    </li>
+                    <li>
+                        <a href="#">Классика</a>
+                    </li>
+                    <li>
+                        <a href="#">Самым маленьким</a>
+                    </li>
+                    <li>
+                        <a href="#">Конструктор</a>
+                    </li>
+                    <li>
+                        <a href="#">Игрушки для обучения</a>
+                    </li>
+                    <li>
+                        <a href="#">Вязанные игрушки</a>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+    </div>
+    
+</body>
+
+</html>

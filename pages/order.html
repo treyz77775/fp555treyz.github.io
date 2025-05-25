@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Оформление заказа</title>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+        integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../styles/common-style.css" />
+    <link rel="stylesheet" href="../styles/order.css" />
+    <link rel="stylesheet" href="../styles/footer.css" />
+    <link rel="stylesheet" href="../styles/navbar.css" />
+    <link rel="icon" href="logotype.jpg" type="image/gif" sizes="16x16" />
+    <script src="https://kit.fontawesome.com/1317bdbbb8.js" crossorigin="anonymous"></script>
+    <style>
+        /* Добавляем стили для отображения товаров в корзине */
+        .order-items-list {
+            margin-top: 20px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-item .product {
+            display: flex;
+            align-items: center;
+            width: 40%;
+        }
+        
+        .order-item .product img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+        
+        .order-item p {
+            width: 20%;
+            text-align: center;
+        }
+        
+        .empty-cart-message {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        #paypal-button-container {
+            margin: 25px 0;
+        }
+        
+        #paypal-error {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body onload="initOrderPage()">
+
+    <div class="nav-container">
+        <div class="wrapper">
+            <nav>
+                <input type="checkbox" id="check">
+                <label for="check" class="checkbtn">
+                    <i class="fas fa-bars"></i>
+                </label>
+                <label class="logo">
+                    <a href="/index.html"><img src="logotype.jpg" alt="Логотип" style="height: 40px; width: auto;"></a>
+                </label>
+                <ul class="nav-items">
+                    <li>
+                        <a href="../pages/catalog.html">Каталог</a>
+                    </li>
+                    <li>
+                        <a href="../pages/about.html">О нас</a>
+                    </li>
+                    <li>
+                        <a href="../pages/frequently-asked-questions.html">FAQ</a>
+                    </li>
+                    <li>
+                        <a href="#" id="login-toggle">Вход <i class="fas fa-caret-down"></i></a>
+                    </li>
+                <li>
+                <!-- Контейнер с формой вне ul, но внутри nav -->
+                <div id="auth-dropdown" class="auth-dropdown" style="display:none;">
+                    <span id="auth-close" style="float:right; cursor:pointer;">&times;</span>
+                    <div id="auth-forms">
+                        <div id="login-form">
+                            <h3>Вход</h3>
+                            <input type="text" id="login-username" placeholder="Имя пользователя" />
+                            <input type="password" id="login-password" placeholder="Пароль" />
+                            <button onclick="login()">Войти</button>
+                            <p>
+                                Нет аккаунта?
+                                <a href="#" onclick="showRegister(event)">Зарегистрироваться</a>
+                            </p>
+                            <p id="login-error" style="color:red;"></p>
+                        </div>
+
+                        <div id="register-form" style="display:none;">
+                            <h3>Регистрация</h3>
+                            <input type="text" id="register-username" placeholder="Имя пользователя" />
+                            <input type="password" id="register-password" placeholder="Пароль" />
+                            <button onclick="register()">Зарегистрироваться</button>
+                            <p>
+                                Уже есть аккаунт?
+                                <a href="#" onclick="showLogin(event)">Войти</a>
+                            </p>
+                            <p id="register-error" style="color:red;"></p>
+                        </div>
+                    </div>
+                </div>
+                </li>
+                                    <li>
+                        <a href="https://www.instagram.com/mimibu_astana" id="instagram">Instagram</a>
+                    </li>
+                    <li>
+                        <a href="https://api.whatsapp.com/send/?phone=77780905908&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%0A%0A%D0%9F%D0%B8%D1%88%D1%83+%D0%B8%D0%B7+%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F+2%D0%93%D0%98%D0%A1.%0A%0A&type=phone_number&app_absent=0" id="whatsapp">Whatsapp</a>
+                    </li>
+                </ul>
+                </ul>
+                <input type="checkbox" id="cart">
+                <label for="cart" class="cartbtn">
+                    <div id="mark-cartbtn"></div>
+                    <i class="fas fa-shopping-cart"></i>
+                </label>
+                <div class="cart-items">
+                    <div class="cart-items-background"></div>
+                    <div class="cart-items-list">
+                        <div class="list-header">
+                            <h3>Ваша корзина</h3>
+                            <label for="cart" class="cartbtnclose">
+                                <i class="fas fa-times"></i>
+                            </label>
+                        </div>
+                        <div class="empty-list-state">
+                            Пока что корзина пуста
+                        </div>
+                        <div class="list"></div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="order-container">
+        <div class="wrapper">
+            <div class="order-list">
+                <div class="order-list-header">
+                    <ul>
+                        <li>Продукт</li>
+                        <li>Кол-во</li>
+                        <li>Цена товара</li>
+                        <li>Подытог</li>
+                    </ul>
+                </div>
+                <div class="order-items-list" id="order-items-container">
+                    <!-- Товары будут вставлены сюда -->
+                </div>
+            </div>
+
+            <div class="order-payment">
+                <img src="logotype.jpg" alt="Логотип" style="height: 40px; width: auto" />
+
+                <form id="order-form">
+                    <h3>Контактные данные</h3>
+                    <div class="row">
+                        <input
+                            required
+                            type="text"
+                            pattern="[a-zA-Zа-яА-Я ]+"
+                            placeholder="Имя"
+                            id="nameField"
+                            class="paypal-required"
+                        />
+                        <i class="fas fa-check"></i>
+                        <i class="fas fa-times"></i>
+                    </div>
+
+                    <div class="row">
+                        <input 
+                            required 
+                            type="email" 
+                            placeholder="Почта" 
+                            id="emailField" 
+                            class="paypal-required"
+                        />
+                        <i class="fas fa-check"></i>
+                        <i class="fas fa-times"></i>
+                    </div>
+
+                    <div class="row">
+                        <input
+                            required
+                            type="tel"
+                            pattern="\+?[\d]{5,40}"
+                            placeholder="Телефон"
+                            id="phoneField"
+                            class="paypal-required"
+                        />
+                        <i class="fas fa-check"></i>
+                        <i class="fas fa-times"></i>
+                    </div>
+
+                    <h3>Итог заказа</h3>
+
+                    <div class="order-details">
+                        <div class="order-details-items">
+                            <p>Стоимость заказа</p>
+                            <p id="order-subtotal">0 Р</p>
+                        </div>
+                        <div class="order-details-items">
+                            <p>Доставка</p>
+                            <p>Бесплатно</p>
+                        </div>
+                        <div class="order-details-items">
+                            <h3>Весь заказ</h3>
+                            <h3 id="order-total">0 Р</h3>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="paypal-button-container" style="margin-top: 20px;"></div>
+                <div id="paypal-error" style="color: red; margin-top: 10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-container">
+        <div class="wrapper">
+            <footer>
+                <div class="footer-table">
+                    <ul class="footer-column">
+                        <div class="logo">
+                            <img src="logotype.jpg" alt="Логотип" style="height: 40px; width: auto" />
+                        </div>
+                    </ul>
+                    <ul class="footer-column">
+                        <li>
+                            <h3>Быстрые ссылки</h3>
+                        </li>
+                        <li>
+                            <a href="../pages/catalog.html">Каталог</a>
+                        </li>
+                        <li>
+                            <a href="../pages/about.html">О нас</a>
+                        </li>
+                        <li>
+                            <a href="../pages/frequently-asked-questions.html">FAQ</a>
+                        </li>
+                        <li>
+                            <a href="#">Контакты</a>
+                        </li>
+                    </ul>
+                    <ul class="footer-column">
+                        <li>
+                            <h3>Для связи</h3>
+                        </li>
+                        <li>
+                            Понедельник - Пятница
+                        </li>
+                        <li>
+                            09:00 - 15:00
+                        </li>
+                                                <li>Улица Анет баба, 13/2
+                        Нура район, Астана, Z05T6G</li>
+                        <li>
+                            <a href="tel:+79876543210">Т: +7‒778‒090‒59‒08</a>
+                        </li>
+                    </ul>
+                    <ul class="footer-column">
+                        <li>
+                            <h3>Разделы</h3>
+                        </li>
+                        <li>
+                            <a href="../pages/catalog.html#classic">Классика</a>
+                        </li>
+                        <li>
+                            <a href="../pages/catalog.html#kids">Самым маленьким</a>
+                        </li>
+                        <li>
+                            <a href="../pages/catalog.html#constructor">Конструктор</a>
+                        </li>
+                        <li>
+                            <a href="../pages/catalog.html#education">Игрушки для обучения</a>
+                        </li>
+                        <li>
+                            <a href="../pages/catalog.html#knitted">Вязанные игрушки</a>
+                        </li>
+                    </ul>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Подключаем PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AX_faY2NLTvZQ58HJU4JHTiA_BdUFydDfPzq9emUke_CaYVi-lS6EateE2SmgxygVmv9YITgMbQL0rZT&currency=RUB"></script>
+
+    <script>
+        // Основная функция инициализации страницы
+        function initOrderPage() {
+            displayOrderItems();
+            initPayPalButton();
+            setupFormValidation();
+        }
+
+        // Отображаем товары в корзине
+        function displayOrderItems() {
+            const cartItems = getCartItems();
+            const container = document.getElementById('order-items-container');
+            const subtotalElement = document.getElementById('order-subtotal');
+            const totalElement = document.getElementById('order-total');
+            
+            container.innerHTML = '';
+            
+            if (cartItems.length === 0) {
+                container.innerHTML = '<p class="empty-cart-message">Ваша корзина пуста</p>';
+                subtotalElement.textContent = '0 Р';
+                totalElement.textContent = '0 Р';
+                return;
+            }
+            
+            let subtotal = 0;
+            let totalItems = 0;
+            
+            cartItems.forEach(item => {
+                const quantity = item.count || item.amount || 1;
+                const price = parseFloat(item.price) || 0;
+                const itemTotal = price * quantity;
+                
+                subtotal += itemTotal;
+                totalItems += quantity;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.innerHTML = `
+                    <div class="product">
+                        <img src="${item.image || item.href || '../img/default-product.jpg'}" alt="${item.name}">
+                        <p class="product-name">${item.name}</p>
+                    </div>
+                    <p class="product-quantity">${quantity}</p>
+                    <p class="product-price">${price.toFixed(2)} Р</p>
+                    <p class="product-total">${itemTotal.toFixed(2)} Р</p>
+                `;
+                
+                container.appendChild(itemElement);
+            });
+            
+            // Обновляем итоговые суммы
+            subtotalElement.textContent = `${subtotal.toFixed(2)} Р`;
+            totalElement.textContent = `${subtotal.toFixed(2)} Р`;
+        }
+
+        // Получаем товары из корзины
+        function getCartItems() {
+            try {
+                const itemsJSON = localStorage.getItem("orderedItems");
+                return itemsJSON ? JSON.parse(itemsJSON) : [];
+            } catch (e) {
+                console.error("Ошибка при чтении корзины:", e);
+                return [];
+            }
+        }
+
+        // Инициализация кнопки PayPal
+        function initPayPalButton() {
+            if (!window.paypal) {
+                document.getElementById('paypal-error').textContent = 
+                    'PayPal не поддерживается в вашем браузере. Пожалуйста, используйте другой способ оплаты.';
+                return;
+            }
+
+            paypal.Buttons({
+                style: {
+                    shape: 'rect',
+                    color: 'gold',
+                    layout: 'vertical',
+                    label: 'paypal'
+                },
+
+                validate: function() {
+                    if (!validateForm()) return false;
+                    if (!validateCart()) return false;
+                    return true;
+                },
+
+                createOrder: function(data, actions) {
+                    const purchaseUnits = createPurchaseUnits();
+                    if (!purchaseUnits) return;
+                    
+                    return actions.order.create({
+                        purchase_units: purchaseUnits,
+                        application_context: {
+                            shipping_preference: 'NO_SHIPPING'
+                        }
+                    });
+                },
+
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert(`Оплата прошла успешно! Спасибо за заказ, ${details.payer.name.given_name}!`);
+                        clearCart();
+                        window.location.href = `../pages/thank-you.html?order_id=${data.orderID}`;
+                    });
+                },
+
+                onError: function(err) {
+                    console.error('PayPal error:', err);
+                    showError('Произошла ошибка при обработке платежа. Пожалуйста, попробуйте еще раз.');
+                },
+
+                onCancel: function(data) {
+                    showError('Платеж был отменен. Вы можете повторить попытку.');
+                }
+            }).render('#paypal-button-container');
+        }
+
+        // Создаем информацию о товарах для PayPal
+        function createPurchaseUnits() {
+            const cartItems = getCartItems();
+            if (cartItems.length === 0) return null;
+            
+            const items = cartItems.map(item => ({
+                name: (item.name || 'Товар').substring(0, 127),
+                unit_amount: {
+                    currency_code: "RUB",
+                    value: (parseFloat(item.price) || 0).toFixed(2)
+                },
+                quantity: (item.count || item.amount || 1).toString(),
+                sku: item.id || '1'
+            }));
+
+            const subtotal = cartItems.reduce((sum, item) => {
+                return sum + (parseFloat(item.price) || 0) * (item.count || item.amount || 1);
+            }, 0);
+            
+            return [{
+                amount: {
+                    currency_code: "RUB",
+                    value: subtotal.toFixed(2),
+                    breakdown: {
+                        item_total: {
+                            currency_code: "RUB",
+                            value: subtotal.toFixed(2)
+                        }
+                    }
+                },
+                items: items,
+                description: "Оплата заказа игрушек"
+            }];
+        }
+
+        // Настраиваем валидацию формы
+        function setupFormValidation() {
+            const fields = document.querySelectorAll('.paypal-required');
+            fields.forEach(field => {
+                field.addEventListener('input', function() {
+                    validateField(this);
+                });
+            });
+        }
+
+        // Валидация поля формы
+        function validateField(field) {
+            const isValid = field.checkValidity();
+            field.classList.toggle('invalid', !isValid);
+            return isValid;
+        }
+
+        // Валидация всей формы
+        function validateForm() {
+            let isValid = true;
+            const fields = document.querySelectorAll('.paypal-required');
+            
+            fields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+            
+            if (!isValid) {
+                showError('Пожалуйста, заполните все обязательные поля корректно.');
+            }
+            
+            return isValid;
+        }
+
+        // Валидация корзины
+        function validateCart() {
+            const cartItems = getCartItems();
+            if (cartItems.length === 0) {
+                showError('Ваша корзина пуста. Пожалуйста, добавьте товары перед оплатой.');
+                return false;
+            }
+            return true;
+        }
+
+        // Очистка корзины
+        function clearCart() {
+            localStorage.removeItem("orderedItems");
+        }
+
+        // Показать сообщение об ошибке
+        function showError(message) {
+            const errorElement = document.getElementById('paypal-error');
+            errorElement.textContent = message;
+            setTimeout(() => errorElement.textContent = '', 5000);
+        }
+
+        // Функции для формы входа/регистрации
+        function login() {
+            // Реализация входа
+        }
+
+        function register() {
+            // Реализация регистрации
+        }
+
+        function showRegister(e) {
+            e.preventDefault();
+            // Показать форму регистрации
+        }
+
+        function showLogin(e) {
+            e.preventDefault();
+            // Показать форму входа
+        }
+    </script>
+</body>
+</html>
